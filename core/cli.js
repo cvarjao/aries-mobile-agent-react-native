@@ -155,6 +155,9 @@ async function generateAppBoilerplace(args) {
       copySpec.src.endsWith('AndroidManifest.xml') ||
       (copySpec.src.endsWith('Info.plist') && !copySpec.src.endsWith('Indy.framework/Info.plist')) ||
       copySpec.src.endsWith('AppDelegate.m') ||
+      copySpec.src.endsWith('Podfile') ||
+      copySpec.src.endsWith('ios/AriesBifold.xcodeproj/xcshareddata/xcschemes/AriesBifold.xcscheme') ||
+      copySpec.src.endsWith('ios/AriesBifold.xcworkspace/contents.xcworkspacedata') ||
       copySpec.src.endsWith('project.pbxproj')
     ) {
       var outputSream = fs.createWriteStream(dstPath, {
@@ -183,8 +186,14 @@ module.exports = {
     console.log(args)
     if (args[0] === 'sync-package-json') {
       syncPackageJson()
-    }else if (args[0] === 'generate-app-boilerplate') {
+    } else if (args[0] === 'generate-app-boilerplate') {
       generateAppBoilerplace(args.splice(1))
+    } else if (args[0] === 'install-indy-sdk') {
+      const androidLibFiles = listFilesRecursive(path.resolve(__dirname, '../app/android/app/src/main/jniLibs'))
+      const iosLibFiles = listFilesRecursive(path.resolve(__dirname, '../app/ios/Pods/Frameworks'))
+      //console.log(`process.cwd(): ${process.cwd()}`)
+      console.dir(androidLibFiles)
+      console.dir(iosLibFiles)
     }
   },
 }
