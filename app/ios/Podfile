@@ -21,6 +21,7 @@ end
 
 target 'AriesBifold' do
   config = use_native_modules!
+  pod 'libindy-objc', :podspec => "./libindy-objc.podspec"
 
   use_react_native!(
     :path => config[:reactNativePath],

@@ -1,0 +1,15 @@
+diff --git a/node_modules/indy-sdk-react-native/indy-sdk-react-native.podspec b/node_modules/indy-sdk-react-native/indy-sdk-react-native.podspec
+index 5957265..83a3bfa 100644
+--- a/node_modules/indy-sdk-react-native/indy-sdk-react-native.podspec
++++ b/node_modules/indy-sdk-react-native/indy-sdk-react-native.podspec
+@@ -36,9 +36,7 @@ Pod::Spec.new do |s|
+   s.swift_version = '4.2'
+ 
+   s.dependency "React"
+-  # ...
+-  # s.dependency "..."
++  s.dependency "libindy-objc"
+ 
+-  s.pod_target_xcconfig = { "FRAMEWORK_SEARCH_PATHS" => "${PODS_ROOT}/Frameworks" }
+ end
+ 
