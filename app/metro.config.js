@@ -15,9 +15,11 @@ const extraNodeModules = {}
 for (const packageDir of packageDirs) {
   const pak = require(path.join(packageDir, 'package.json'))
   const modules = Object.keys({
-    ...pak.peerDependencies, ...pak.devDependencies
+    ...pak.peerDependencies, ...pak.devDependencies, ...pak.dependencies
   })
-  extraExclusionlist.push(...modules.map((m) => path.join(packageDir, 'node_modules', m)))
+  //extraExclusionlist.push(path.join(__dirname, 'node_modules', pak.name))
+  extraExclusionlist.push(path.join(packageDir, 'node_modules'))
+  //extraExclusionlist.push(...modules.map((m) => path.join(packageDir, 'node_modules', m)))
   
   modules.reduce((acc, name) => {
     acc[name] = path.join(__dirname, 'node_modules', name)
@@ -33,7 +35,7 @@ module.exports = (async () => {
   } = await getDefaultConfig()
   const metroConfig = {
     projectRoot: path.resolve(__dirname, './'),
-    /*resetCache: true,*/
+    resetCache: true,
     transformer: {
       babelTransformerPath: require.resolve('react-native-svg-transformer'),
       getTransformOptions: async () => ({

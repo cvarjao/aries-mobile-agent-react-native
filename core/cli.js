@@ -2,6 +2,8 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-console */
 
+const { ConsoleLogger } = require('@aries-framework/core')
+
 function syncPackageJson() {
   const { execSync } = require('child_process')
   const fs = require('fs')
@@ -15,44 +17,62 @@ function syncPackageJson() {
     console.log(`cmd\n${command}`)
     execSync(command, { stdio: 'inherit', cwd: process.cwd() })
   }
-  const lockedDependencies = execSync('npm ls --package-lock-only', { cwd: __dirname })
+  //npm ls --package-lock-only
+  let lockedDependenciesInLines = execSync('yarn list --depth 0 --frozen-lockfile', { cwd: __dirname })
     .toString()
     .trim()
     .split('\n')
     .splice(1)
+  lockedDependenciesInLines = lockedDependenciesInLines.slice(0, lockedDependenciesInLines.length - 1)
+  const lockedDependencies = lockedDependenciesInLines
     .map((item) => {
-      return item.substring(4)
+      return item.substring(3)
     })
     .reduce((prev, val) => {
       const [name, version] = parseNameAndVersion(val)
       prev[name] = version
       return prev
     }, {})
-
-  //const peerDependencies = pak.peerDependencies
-  //console.log(`peerDependencies:${ Object.keys(pak.peerDependencies).length}`)
-  for (const item of Object.keys(pak.peerDependencies)) {
-    pak.peerDependencies[item] = '' + lockedDependencies[item]
-  }
-  console.log(JSON.stringify(pak.peerDependencies, undefined, 2))
-
-  //console.log(`devDependencies:${ Object.keys(pak.devDependencies).length}`)
-  for (const item of Object.keys(pak.devDependencies)) {
-    if (pak.devDependencies[item].startsWith('npm:')) {
-      const curVersion = pak.devDependencies[item]
-      const [name] = parseNameAndVersion(curVersion)
-      pak.devDependencies[item] = name + '@' + lockedDependencies[item + '@' + name]
+  const freezeDependency = (dependencies, item) => {
+    const curVersion = dependencies[item]
+    if (curVersion.startsWith('npm:')) {
+      const [name] = parseNameAndVersion(curVersion.substring(4))
+      dependencies[item] = 'npm:' + name + '@' + lockedDependencies[name]
     } else {
-      pak.devDependencies[item] = '' + lockedDependencies[item]
+      dependencies[item] = '' + lockedDependencies[item]
     }
   }
-  console.log('Installing Dependencies ...')
-  for (const item of Object.keys(pak.peerDependencies)) {
-    npmInstall(`npm install ${item}@${pak.peerDependencies[item]} --force --save-exact`, {
-      stdio: 'inherit',
-      cwd: process.cwd(),
-    })
+  const freezeDependencies = (dependencies) => {
+    if (dependencies) {
+      for (const item of Object.keys(dependencies)) {
+        freezeDependency(dependencies, item)
+      }
+    }
   }
+  const installDependencies = (dependencies) => {
+    if (dependencies) {
+      for (const item of Object.keys(dependencies)) {
+        const command = `yarn add ${item}@${dependencies[item]} --exact`
+        console.log(command)
+        npmInstall(command, {
+          stdio: 'inherit',
+          cwd: process.cwd(),
+        })
+      }
+    }
+  }
+  freezeDependencies(pak.dependencies)
+  freezeDependencies(pak.peerDependencies)
+  //console.log(JSON.stringify(pak.peerDependencies, undefined, 2))
+
+  //console.log(`devDependencies:${ Object.keys(pak.devDependencies).length}`)
+  freezeDependencies(pak.devDependencies)
+
+  console.log('Installing Dependencies ...')
+  installDependencies(pak.dependencies)
+  console.log('Installing Peer Dependencies ...')
+  installDependencies(pak.peerDependencies)
+
   console.log('Installing Dev Dependencies ...')
   const devAllowList = [
     '@babel/core',
@@ -67,7 +87,7 @@ function syncPackageJson() {
   ]
   for (const item of Object.keys(pak.devDependencies)) {
     if (devAllowList.includes(item)) {
-      npmInstall(`npm install -D ${item}@${pak.devDependencies[item]} --force --save-exact`, {
+      npmInstall(`yarn add -D ${item}@${pak.devDependencies[item]} --exact`, {
         stdio: 'inherit',
         cwd: process.cwd(),
       })
