@@ -23,24 +23,13 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '16.x'
+          cache: 'yarn'
           registry-url: 'https://registry.npmjs.org'
 
       - name: Configure ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: 2.6
-
-        # GitHub recommends not caching node_modules but rather
-        # .npm because it can break across Node versions and
-        #  won't work with npm ci.
-      - name: Cache node modules
-        uses: actions/cache@v1
-        id: npm-cache
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ env.cacheId }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-${{ env.cacheId }}-
 
       - name: Cache pod dependencies
         id: pod-cache
@@ -68,9 +57,7 @@ jobs:
 
       - name: Install react native dependencies
         run: |
-          npm version && npm ci && \
-          git status && \
-          cd ./app && npm ci
+          yarn versions && yarn install && git status
 
       - name: Install iOS dependencies
         # if: steps.pod-cache.outputs.cache-hit != 'true' || steps.npm-cache.outputs.cache-hit != 'true'
@@ -115,6 +102,7 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '16.x'
+          cache: 'yarn'
           registry-url: 'https://registry.npmjs.org'
 
       - name: setup ubuntu
@@ -144,22 +132,9 @@ jobs:
           yes | android-sdk-linux/tools/bin/sdkmanager --licenses
           set -o pipefail
 
-        # GitHub recommends not caching node_modules but rather
-        # .npm because it can break across Node versions and
-        #  won't work with npm ci.
-      - name: Cache node modules
-        uses: actions/cache@v1
-        id: npm-cache
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ env.cacheId }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-${{ env.cacheId }}-
-
       - name: Install dependencies
         run: |
-          npm version && npm ci &&
-          cd ./app && npm ci
+          yarn versions && yarn install
 
       - name: Android Debug Build
         working-directory: ./app/android
