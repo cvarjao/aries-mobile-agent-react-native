@@ -100,7 +100,7 @@ export type {
   Tours as ToursState,
 } from './types/state'
 export * from './container-api'
-export { MainSystem } from './container-impl'
+export { MainContainer } from './container-impl'
 
 export {
   App,
@@ -118,7 +118,6 @@ export {
   credentialsTourSteps,
   credentialOfferTourSteps,
   proofRequestTourSteps,
-  Button,
   ButtonType,
   HeaderButton,
   ButtonLocation,
@@ -149,3 +148,4 @@ export {
   contexts,
   Text,
 }
+export type { Button }
