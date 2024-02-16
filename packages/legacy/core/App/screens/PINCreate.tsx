@@ -8,7 +8,6 @@ import {
   Keyboard,
   StyleSheet,
   Text,
-  StatusBar,
   View,
   TextInput,
   TouchableOpacity,
@@ -33,7 +32,6 @@ import { useTheme } from '../contexts/theme'
 import { BifoldError } from '../types/error'
 import { AuthenticateStackParams, Screens } from '../types/navigators'
 import { PINCreationValidations, PINValidationsType } from '../utils/PINCreationValidation'
-import { StatusBarStyles } from '../utils/luminance'
 import { testIdWithKey } from '../utils/testable'
 
 interface PINCreateProps extends StackScreenProps<ParamListBase, Screens.CreatePIN> {
@@ -174,7 +172,6 @@ const PINCreate: React.FC<PINCreateProps> = ({ setAuthenticated, route }) => {
 
   return (
     <KeyboardView>
-      <StatusBar barStyle={StatusBarStyles.Light} />
       <View style={style.screenContainer}>
         <View style={style.contentContainer}>
           <Text style={[TextTheme.normal, { marginBottom: 16 }]}>
