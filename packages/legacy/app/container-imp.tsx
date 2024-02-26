@@ -1,7 +1,5 @@
-import { Container, TOKENS, TokenMapping } from '@hyperledger/aries-bifold-core'
+import { Container, TokenMapping } from '@hyperledger/aries-bifold-core'
 import { DependencyContainer } from 'tsyringe'
-
-import Button from './components/buttons/Button'
 
 export class AppContainer implements Container {
   private container: DependencyContainer
@@ -11,13 +9,13 @@ export class AppContainer implements Container {
   public init(): Container {
     // eslint-disable-next-line no-console
     console.log(`Initializing App container`)
-    this.container.registerInstance(TOKENS.COMP_BUTTON, Button)
+    // Here you can register any component to override components in core package
+    // Example: Replacing button in core with custom button
+    // this.container.registerInstance(TOKENS.COMP_BUTTON, Button)
     return this
   }
 
   public resolve<K extends keyof TokenMapping>(token: K): TokenMapping[K] {
-    // eslint-disable-next-line no-console
-    console.log(`resolving from main app:${token}`)
     return this.container.resolve(token) as TokenMapping[K]
   }
 

@@ -22,19 +22,9 @@ const ButtonImpl: Button = forwardRef(
     }
     const [isActive, setIsActive] = useState<boolean>(false)
 
-    function onTap() {
-      // eslint-disable-next-line no-console
-      console.log('Default core behavior')
-      onPress?.()
-    }
-
-    useEffect(() => {
-      // eslint-disable-next-line no-console
-      console.log('I am button from core app')
-    }, [])
     return (
       <TouchableOpacity
-        onPress={onTap}
+        onPress={onPress}
         accessible={accessible}
         accessibilityLabel={accessibilityLabel}
         accessibilityRole={'button'}
