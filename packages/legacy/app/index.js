@@ -38,14 +38,14 @@ const navigationTheme = {
 LogBox.ignoreAllLogs()
 // console.log(`React Native Version:${ReactNativeVersion.major}.${ReactNativeVersion.minor}.${ReactNativeVersion.patch}`)
 const bifoldContainer = new MainContainer(container.createChildContainer()).init()
-const ONApp = BifoldApp(new AppContainer(bifoldContainer).init())
+const App = BifoldApp(new AppContainer(bifoldContainer).init())
 
 const Base = () => {
   const navigationRef = useNavigationContainerRef()
 
   return (
     <NavigationContainer ref={navigationRef} theme={navigationTheme}>
-      <ONApp />
+      <App />
     </NavigationContainer>
   )
 }
