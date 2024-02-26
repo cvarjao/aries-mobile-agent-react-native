@@ -11,13 +11,13 @@ export class AppContainer implements Container {
   public init(): Container {
     // eslint-disable-next-line no-console
     console.log(`Initializing App container`)
-    this.container.createChildContainer().registerInstance(TOKENS.COMP_BUTTON, Button)
+    this.container.registerInstance(TOKENS.COMP_BUTTON, Button)
     return this
   }
 
   public resolve<K extends keyof TokenMapping>(token: K): TokenMapping[K] {
     // eslint-disable-next-line no-console
-    console.log(`resolving ${token}`)
+    console.log(`resolving from main app:${token}`)
     return this.container.resolve(token) as TokenMapping[K]
   }
 
