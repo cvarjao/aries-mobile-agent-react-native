@@ -1,9 +1,8 @@
 import React, { forwardRef, useEffect, useState } from 'react'
 import { Text, TouchableOpacity, View } from 'react-native'
 
-import { useTheme } from '../../contexts/theme'
-
 import { Button, ButtonType, ButtonProps } from './Button-api'
+import { Buttons } from './styles'
 
 const ButtonImpl: Button = forwardRef(
   (
@@ -11,7 +10,7 @@ const ButtonImpl: Button = forwardRef(
     ref: React.LegacyRef<TouchableOpacity>
   ) => {
     const accessible = accessibilityLabel && accessibilityLabel !== '' ? true : false
-    const { Buttons, heavyOpacity } = useTheme()
+
     const buttonStyles = {
       [ButtonType.Critical]: { color: Buttons.critical, text: Buttons.primaryText },
       [ButtonType.Primary]: { color: Buttons.primary, text: Buttons.primaryText },
@@ -24,13 +23,13 @@ const ButtonImpl: Button = forwardRef(
 
     function onTap() {
       // eslint-disable-next-line no-console
-      console.log('Default core behavior')
+      console.log('App custom behavior')
       onPress?.()
     }
 
     useEffect(() => {
       // eslint-disable-next-line no-console
-      console.log('I am button from core app')
+      console.log('I am button from main app')
     }, [])
     return (
       <TouchableOpacity
@@ -47,7 +46,7 @@ const ButtonImpl: Button = forwardRef(
           isActive && buttonType === ButtonType.Secondary && { backgroundColor: Buttons.primary.backgroundColor },
         ]}
         disabled={disabled}
-        activeOpacity={heavyOpacity}
+        activeOpacity={0.7}
         ref={ref}
       >
         <View
